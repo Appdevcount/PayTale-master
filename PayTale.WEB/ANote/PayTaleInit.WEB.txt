@@ -1,0 +1,63 @@
+PayTale  C R U D    Application Objects
+=========================================
+Version 1
+========
+
+Group Auditor of the Month= GAM
+
+[Screen0-LOGIN]
+
+
+Group[GroupName]
+  GroupType
+  GroupName
+  Members - Member/GAM
+[Screen1]
+
+ExPay[ExpensePayment]
+  Member
+  Amount
+  Category
+  Note
+  BillSnap
+[Screen2]
+
+ExPayList
+  Update-Delete Option
+[Screen3]
+
+GroupWallet[Month]
+  Member
+  MAdvance [MAdvance,GAdvance,AuditorAdvance-ideally zero]
+  WalletBalance =   (Sum(MAdvance)- ( GAMExPay>0?Sum(MAdvance):GAMHand  ))
+[Screen4]
+
+**GAMHand is Sum( GAM ExPay List)
+**GAMExPay is Formula => *GAMExPay(+0)=(GAMHand-(Sum(MAdvance))>0?Equated:0
+
+AuditReport[Month] - MAdvance -  ExPay[*GAMExPay(+-)=((GAMHand(GAdvance+OwnExPay))-Sum(MAdvance))>0?Equated:0] - DividedAmount[TotalContributedAmount/Members]  - DueAmount[DividedAmount-(MAdvance+ExPay)]
+  Group[TotalContributedAmount=Sum(MAdvance) +Sum(ExPay)]
+  Member
+  Group[TotalSpentAmount= Sum(ExPay) +GAMExPay>0?Sum(MAdvance):GAMHand   ]  
+[Screen5]
+
+Charts
+	CategoryExpense
+	Member-CategoryExpense
+	DueAmountAnalysis
+	AdvanceAmountAnalysis
+	ExPayAmountAnalysis  
+[Screen6]
+
+======
+GroupType = Food ,Trip ..
+GroupType-ExpCategories = Restuarant,HouseholdItems,CookingItems,Others,Automobile,Donation,Gifts,Entertainment,Transportation
+
+
+
+
+
+**=> Month wise switch option
+Review and notify members
+
+

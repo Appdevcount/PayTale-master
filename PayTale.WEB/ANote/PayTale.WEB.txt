@@ -1,0 +1,18 @@
+Pages
+
+AuthLogin
+	Logout
+Create Group
+	Edit
+	Delete
+Create Users
+	Edit
+	Delete
+Create PayTalePage
+	Edit
+	Delete
+Add Money to Wallet
+	TakeOut from Wallet
+Settle the GTranCode using Wallet
+	Add to Wallet
+	Give from Wallet

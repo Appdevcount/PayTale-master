@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+    <table class="table table-bordered">
+        <thead>
+            <tr class="success">
+                <th>
+                    Social Logins
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <input id="GoogleId" type="button" 
+                           value="Login with Google" class="btn btn-success" onclick="Google()"/>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <script>
+        function Google() {
+            var ApiurlforGoogle = "http://localhost:54628/api/Account/ExternalLogin?";
+            var ProviderDetails = "provider=Google&response_type=token&client_id=self&";
+            var redirect_uri = "redirect_uri=http://localhost:54628/Auth/SignInGoogle";
+            var state = "&state=9hxuHvfBkoHkjjCgg5URPwTa-NCZaUxqWGWAOyBI9v41";
+            //http://localhost:54628/api/Account/ExternalLogin?provider=Google&response_type=
+            //token&client_id=self&redirect_uri=http%3A%2F%2Flocalhost%3A54628%2F&
+            //    state=9hxuHvfBkoHkjjCgg5URPwTa-NCZaUxqWGWAOyBI9v41
+
+            var URL = ApiurlforGoogle + ProviderDetails+ redirect_uri + state;
+            var EURL = "http%3A%2F%2Flocalhost%3A54628%2Fapi%2FAccount%2FExternalLogin%3Fprovider%3DGoogle%26response_type%3Dtoken%26client_id%3Dself%26redirect_uri%3Dhttp%3A%2F%2Flocalhost%3A54628%2FAuth%2FSignInGoogle%26state%3D9hxuHvfBkoHkjjCgg5URPwTa-NCZaUxqWGWAOyBI9v41";
+            console.log("http://localhost:54628/api/Account/ExternalLogin?provider=Google&response_type=token&client_id=self&redirect_uri=http%3A%2F%2Flocalhost%3A54628%2F&state=9hxuHvfBkoHkjjCgg5URPwTa-NCZaUxqWGWAOyBI9v41");
+
+            window.location.href = "http://localhost:54628/api/Account/ExternalLogin?provider=Google&response_type=token&client_id=self&redirect_uri=http%3A%2F%2Flocalhost%3A54628%2F&state=9hxuHvfBkoHkjjCgg5URPwTa-NCZaUxqWGWAOyBI9v41";
+            
+        }
+    </script>
+
+</body>
+</html>
