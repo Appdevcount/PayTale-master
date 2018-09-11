@@ -16,3 +16,5 @@ Add Money to Wallet
 Settle the GTranCode using Wallet
 	Add to Wallet
 	Give from Wallet
+
+
