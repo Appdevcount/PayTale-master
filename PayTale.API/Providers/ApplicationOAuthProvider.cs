@@ -75,7 +75,8 @@ namespace PayTale.API.Providers
         {
             if (context.ClientId == _publicClientId)
             {
-                Uri expectedRootUri = new Uri(context.Request.Uri,  "/Auth/SignInGoogle");// "/");
+                Uri expectedRootUri = new Uri(context.Request.Uri, "/PayTale.API/Auth/SignInGoogle");// "/");
+                //Uri expectedRootUri = new Uri(context.Request.Uri, "/Auth/SignInGoogle");// "/");
 
                 if (expectedRootUri.AbsoluteUri == context.RedirectUri)
                 {

@@ -3,6 +3,8 @@
 <head>
     <meta charset="utf-8" />
     <title></title>
+    <script src="Scripts/jquery-3.3.1.min.js"></script>
+    <script src="Scripts/GoogleAuthenticator.js"></script>
 </head>
 <body>
     <table class="table table-bordered">
@@ -28,10 +30,12 @@
 
             //var ApiurlforGoogle = "http://localhost/PayTale.API/api/Account/ExternalLogin?";
             //var ApiurlforGoogle = "http://localhost:54628/api/Account/ExternalLogin?";
-            var ApiurlforGoogle = "/api/Account/ExternalLogin?";
+            //var ApiurlforGoogle = "/api/Account/ExternalLogin?";
+            var ApiurlforGoogle = "/PayTale.API/api/Account/ExternalLogin?";
             var ProviderDetails = "provider=Google&response_type=token&client_id=self&";
             //var redirect_uri = "redirect_uri=http://localhost/PayTale.API/Auth/SignInGoogle";
-            var redirect_uri = "redirect_uri=http%3A%2F%2Flocalhost%3A54628%2FAuth%2FSignInGoogle";
+            var redirect_uri = "redirect_uri=http%3A%2F%2Flocalhost%2FPayTale.API%2FAuth%2FSignInGoogle";
+            //var redirect_uri = "redirect_uri=http%3A%2F%2Flocalhost%3A54628%2FAuth%2FSignInGoogle";
             var state = "&state=w-srodOj8zrE40v0GRuzv8gGoEbdUAyWF2L_LQckQHI1";
             //http://localhost:54628/api/Account/ExternalLogin?provider=Google&response_type=
             //token&client_id=self&redirect_uri=http%3A%2F%2Flocalhost%3A54628%2F&

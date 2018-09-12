@@ -345,12 +345,14 @@ namespace PayTale.API.Controllers
         [OverrideAuthentication]
         [HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
         [Route("RegisterExternal")]
-        public async Task<IHttpActionResult> RegisterExternal(RegisterExternalBindingModel model)
+        //public async Task<IHttpActionResult> RegisterExternal(RegisterExternalBindingModel model)
+        public async Task<IHttpActionResult> RegisterExternal()
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            //Commneted few things in this method for making it work as per Kudvenkat without Register Model
+            //if (!ModelState.IsValid)
+            //{
+            //    return BadRequest(ModelState);
+            //}
 
             var info = await Authentication.GetExternalLoginInfoAsync();
             if (info == null)
@@ -358,7 +360,8 @@ namespace PayTale.API.Controllers
                 return InternalServerError();
             }
 
-            var user = new ApplicationUser() { UserName = model.Email, Email = model.Email };
+            //var user = new ApplicationUser() { UserName = model.Email, Email = model.Email };
+            var user = new ApplicationUser() { UserName = info.Email, Email = info.Email };
 
             IdentityResult result = await UserManager.CreateAsync(user);
             if (!result.Succeeded)

@@ -1,8 +1,10 @@
 Select * from AspNetRoles
 Select * from AspNetUserClaims
-Select * from AspNetUserLogins
 Select * from AspNetUserRoles
+Select * from AspNetUserLogins
+--delete from AspNetUserLogins
 Select * from AspNetUsers
+--delete from AspNetUsers
 Select * from ExpenseCategory
 Select * from GMembers
 Select * from MemberType
