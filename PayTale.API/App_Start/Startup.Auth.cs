@@ -10,6 +10,8 @@ using Microsoft.Owin.Security.OAuth;
 using Owin;
 using PayTale.API.Providers;
 using PayTale.API.Models;
+using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace PayTale.API
 {
@@ -62,7 +64,32 @@ namespace PayTale.API
             app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
             {
                 ClientId = "797307720381-ofg1v9bhmqo2k4u7u3e2bcqca0hvh07r.apps.googleusercontent.com",
-            ClientSecret = "X7YczMPgm_VdDg0XTZFRVe7O"
+            ClientSecret = "X7YczMPgm_VdDg0XTZFRVe7O",
+                //Added Provider to get more detaiils by me - http://codechrist.blogspot.com/2016/07/a-tutorial-on-how-to-get-profile_9.html
+                Provider = new GoogleOAuth2AuthenticationProvider()
+                {
+                    OnAuthenticated = (context) =>
+                    {
+                        context.Identity.AddClaim(new Claim("urn:google:name", context.Identity.FindFirstValue(ClaimTypes.Name)));
+                        context.Identity.AddClaim(new Claim("urn:google:email", context.Identity.FindFirstValue(ClaimTypes.Email)));
+                        //This following line is need to retrieve the profile image
+                        context.Identity.AddClaim(new System.Security.Claims.Claim("urn:google:accesstoken", context.AccessToken, ClaimValueTypes.String, "Google"));
+
+                    //context.Identity.AddClaim(new System.Security.Claims.Claim("urn:google:mobilephone", context.Identity.FindFirstValue(ClaimTypes.MobilePhone)));
+                        //, ClaimValueTypes.String, "Google"));
+
+                        foreach (var claim in context.User)
+                        {
+                            var claimType = string.Format("urn:google:{0}", claim.Key);
+                            string claimValue = claim.Value.ToString();
+                            if (!context.Identity.HasClaim(claimType, claimValue))
+                                context.Identity.AddClaim(new System.Security.Claims.Claim(claimType, claimValue, "XmlSchemaString", "Google"));
+                        }
+
+
+                        return Task.FromResult(0);
+                    }
+                }
             });
         }
     }
