@@ -40,9 +40,10 @@ namespace PayTale.API
                 TokenEndpointPath = new PathString("/Token"),
                 Provider = new ApplicationOAuthProvider(PublicClientId),
                 AuthorizeEndpointPath = new PathString("/api/Account/ExternalLogin"),
-                AccessTokenExpireTimeSpan = TimeSpan.FromDays(14),
+                //AccessTokenExpireTimeSpan = TimeSpan.FromDays(14),
+                AccessTokenExpireTimeSpan = TimeSpan.FromSeconds(15),
                 // In production mode set AllowInsecureHttp = false
-                AllowInsecureHttp = true
+                AllowInsecureHttp = true  
             };
 
             // Enable the application to use bearer tokens to authenticate users
@@ -61,36 +62,80 @@ namespace PayTale.API
             //    appId: "",
             //    appSecret: "");
 
-            app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
+            if (System.Configuration.ConfigurationSettings.AppSettings["ProdGoogleAuth"].ToString() == "true")
             {
-                ClientId = "797307720381-ofg1v9bhmqo2k4u7u3e2bcqca0hvh07r.apps.googleusercontent.com",
-            ClientSecret = "X7YczMPgm_VdDg0XTZFRVe7O",
-                //Added Provider to get more detaiils by me - http://codechrist.blogspot.com/2016/07/a-tutorial-on-how-to-get-profile_9.html
-                Provider = new GoogleOAuth2AuthenticationProvider()
+                app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
                 {
-                    OnAuthenticated = (context) =>
+
+                    //Prod - localhost:80
+                    ClientId = "797307720381-ofg1v9bhmqo2k4u7u3e2bcqca0hvh07r.apps.googleusercontent.com",
+                    ClientSecret = "X7YczMPgm_VdDg0XTZFRVe7O",
+
+
+                    //Added Provider to get more detaiils by me - http://codechrist.blogspot.com/2016/07/a-tutorial-on-how-to-get-profile_9.html
+                    Provider = new GoogleOAuth2AuthenticationProvider()
                     {
-                        context.Identity.AddClaim(new Claim("urn:google:name", context.Identity.FindFirstValue(ClaimTypes.Name)));
-                        context.Identity.AddClaim(new Claim("urn:google:email", context.Identity.FindFirstValue(ClaimTypes.Email)));
-                        //This following line is need to retrieve the profile image
-                        context.Identity.AddClaim(new System.Security.Claims.Claim("urn:google:accesstoken", context.AccessToken, ClaimValueTypes.String, "Google"));
-
-                    //context.Identity.AddClaim(new System.Security.Claims.Claim("urn:google:mobilephone", context.Identity.FindFirstValue(ClaimTypes.MobilePhone)));
-                        //, ClaimValueTypes.String, "Google"));
-
-                        foreach (var claim in context.User)
+                        OnAuthenticated = (context) =>
                         {
-                            var claimType = string.Format("urn:google:{0}", claim.Key);
-                            string claimValue = claim.Value.ToString();
-                            if (!context.Identity.HasClaim(claimType, claimValue))
-                                context.Identity.AddClaim(new System.Security.Claims.Claim(claimType, claimValue, "XmlSchemaString", "Google"));
+                            context.Identity.AddClaim(new Claim("urn:google:name", context.Identity.FindFirstValue(ClaimTypes.Name)));
+                            context.Identity.AddClaim(new Claim("urn:google:email", context.Identity.FindFirstValue(ClaimTypes.Email)));
+                            //This following line is need to retrieve the profile image
+                            context.Identity.AddClaim(new System.Security.Claims.Claim("urn:google:accesstoken", context.AccessToken, ClaimValueTypes.String, "Google"));
+
+                            //context.Identity.AddClaim(new System.Security.Claims.Claim("urn:google:mobilephone", context.Identity.FindFirstValue(ClaimTypes.MobilePhone)));
+                            //, ClaimValueTypes.String, "Google"));
+
+                            foreach (var claim in context.User)
+                            {
+                                var claimType = string.Format("urn:google:{0}", claim.Key);
+                                string claimValue = claim.Value.ToString();
+                                if (!context.Identity.HasClaim(claimType, claimValue))
+                                    context.Identity.AddClaim(new System.Security.Claims.Claim(claimType, claimValue, "XmlSchemaString", "Google"));
+                            }
+
+
+                            return Task.FromResult(0);
                         }
-
-
-                        return Task.FromResult(0);
                     }
-                }
-            });
+                });
+            }
+            else {
+                app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
+                {   
+                    //TEST - localhost:54628
+                    ClientId = "10452304310-cjq2857ugbndp0jp08eg8m7376pmr6co.apps.googleusercontent.com",
+                    ClientSecret = "s9yqUILzKdVqWfnSvE0aw5qx",
+
+
+                    //Added Provider to get more detaiils by me - http://codechrist.blogspot.com/2016/07/a-tutorial-on-how-to-get-profile_9.html
+                    Provider = new GoogleOAuth2AuthenticationProvider()
+                    {
+                        OnAuthenticated = (context) =>
+                        {
+                            context.Identity.AddClaim(new Claim("urn:google:name", context.Identity.FindFirstValue(ClaimTypes.Name)));
+                            context.Identity.AddClaim(new Claim("urn:google:email", context.Identity.FindFirstValue(ClaimTypes.Email)));
+                            //This following line is need to retrieve the profile image
+                            context.Identity.AddClaim(new System.Security.Claims.Claim("urn:google:accesstoken", context.AccessToken, ClaimValueTypes.String, "Google"));
+
+                            //context.Identity.AddClaim(new System.Security.Claims.Claim("urn:google:mobilephone", context.Identity.FindFirstValue(ClaimTypes.MobilePhone)));
+                            //, ClaimValueTypes.String, "Google"));
+
+                            foreach (var claim in context.User)
+                            {
+                                var claimType = string.Format("urn:google:{0}", claim.Key);
+                                string claimValue = claim.Value.ToString();
+                                if (!context.Identity.HasClaim(claimType, claimValue))
+                                    context.Identity.AddClaim(new System.Security.Claims.Claim(claimType, claimValue, "XmlSchemaString", "Google"));
+                            }
+
+
+                            return Task.FromResult(0);
+                        }
+                    }
+                });
+            }
+
+
         }
     }
 }

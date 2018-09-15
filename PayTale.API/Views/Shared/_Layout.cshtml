@@ -23,6 +23,8 @@
                     <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, null)</li>
                     <li>@Html.ActionLink("API", "Index", "Help", new { area = "" }, null)</li>
                 </ul>
+@*                <span style="float:right">@Html.ActionLink("LogOut", "GoogleLogout", "Auth", new { area = "" }, null)</span>*@
+                <span style="float:right;color:white" onclick="LogOut()">LogOut</span>
             </div>
         </div>
     </div>

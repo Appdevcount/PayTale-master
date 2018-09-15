@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -13,6 +14,7 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OAuth;
+using Newtonsoft.Json;
 using PayTale.API.Models;
 using PayTale.API.Providers;
 using PayTale.API.Results;
@@ -70,8 +72,13 @@ namespace PayTale.API.Controllers
         [Route("Logout")]
         public IHttpActionResult Logout()
         {
+            //Added below line from - https://cloud.google.com/dotnet/docs/getting-started/authenticate-users
+            //Request.GetOwinContext().Authentication.SignOut();
+            //This line is same as below but calling thru a method
+
             Authentication.SignOut(CookieAuthenticationDefaults.AuthenticationType);
             return Ok();
+
         }
 
         // GET api/Account/ManageInfo?returnUrl=%2F&generateState=true
@@ -125,7 +132,7 @@ namespace PayTale.API.Controllers
 
             IdentityResult result = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword,
                 model.NewPassword);
-            
+
             if (!result.Succeeded)
             {
                 return GetErrorResult(result);
@@ -258,9 +265,9 @@ namespace PayTale.API.Controllers
             if (hasRegistered)
             {
                 Authentication.SignOut(DefaultAuthenticationTypes.ExternalCookie);
-                
-                 ClaimsIdentity oAuthIdentity = await user.GenerateUserIdentityAsync(UserManager,
-                    OAuthDefaults.AuthenticationType);
+
+                ClaimsIdentity oAuthIdentity = await user.GenerateUserIdentityAsync(UserManager,
+                   OAuthDefaults.AuthenticationType);
                 ClaimsIdentity cookieIdentity = await user.GenerateUserIdentityAsync(UserManager,
                     CookieAuthenticationDefaults.AuthenticationType);
 
@@ -308,7 +315,7 @@ namespace PayTale.API.Controllers
                         response_type = "token",
                         client_id = Startup.PublicClientId,
                         //redirect_uri = "http://localhost:54628/Auth/SignInGoogle",
-                        redirect_uri =  new Uri(Request.RequestUri, returnUrl).AbsoluteUri,
+                        redirect_uri = new Uri(Request.RequestUri, returnUrl).AbsoluteUri,
                         state = state
                     }),
                     State = state
@@ -355,13 +362,37 @@ namespace PayTale.API.Controllers
             //}
 
             var info = await Authentication.GetExternalLoginInfoAsync();
+
+
+            //dynamic object for claims -by me
+            //dynamic Claims = new ExpandoObject();
+            //var dictionary = (IDictionary<string, string>)Claims;
+            Dictionary<object, object> dictionary = new Dictionary<object, object>();
+
+            string jsonData = "";
+            try
+            {
+
+                foreach (Claim c in info.ExternalIdentity.Claims)
+                {
+                    if(!dictionary.ContainsKey(c.Type))
+                    dictionary.Add(c.Type, c.Value);
+                }
+                jsonData = JsonConvert.SerializeObject(dictionary);
+
+            }
+            catch (Exception e)
+            {
+
+            }
             if (info == null)
             {
                 return InternalServerError();
             }
-
+        
             //var user = new ApplicationUser() { UserName = model.Email, Email = model.Email };
-            var user = new ApplicationUser() { UserName = info.Email, Email = info.Email };
+            //var user = new ApplicationUser() { UserName = info.Email, Email = info.Email };
+            var user = new ApplicationUser() { UserName = info.Email, Email = info.Email, PhoneNumber = jsonData };
 
             IdentityResult result = await UserManager.CreateAsync(user);
             if (!result.Succeeded)
@@ -372,9 +403,10 @@ namespace PayTale.API.Controllers
             result = await UserManager.AddLoginAsync(user.Id, info.Login);
             if (!result.Succeeded)
             {
-                return GetErrorResult(result); 
+                return GetErrorResult(result);
             }
             return Ok();
+            //return Ok(jsonData);
         }
 
         protected override void Dispose(bool disposing)

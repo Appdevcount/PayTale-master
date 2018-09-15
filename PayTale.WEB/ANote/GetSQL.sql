@@ -1,10 +1,16 @@
+use PayTale
+
+delete from AspNetUserLogins
+delete from AspNetUsers
+
+Select * from AspNetUserLogins
+Select * from AspNetUsers
+
 Select * from AspNetRoles
 Select * from AspNetUserClaims
 Select * from AspNetUserRoles
 Select * from AspNetUserLogins
---delete from AspNetUserLogins
 Select * from AspNetUsers
---delete from AspNetUsers
 Select * from ExpenseCategory
 Select * from GMembers
 Select * from MemberType
