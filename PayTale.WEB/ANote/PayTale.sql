@@ -275,128 +275,208 @@ CREATE TABLE PayTaleGTran (
 	StartDate DATETIME, EndDate DATETIME
 	)
 
-DROP TABLE PayTales
+drop table PayTales
+Create Table PayTales
+(
+  Id bigint identity,
+  GroupId bigint,
+  GTranCode varchar(max),--STARTDATE+TOKEN
+  MemberId bigint,
+  MTypeId bigint ,
+  Amount decimal,
+  Category varchar(max),
+  Note varchar(max),
+  BillSnap varchar(max),
+  PayTaleDate datetime default getdate() ,
 
-CREATE TABLE PayTales (
-	Id BIGINT identity, GroupId BIGINT, GTranCode VARCHAR(max),
-	--STARTDATE+TOKEN
-	MemberId BIGINT, MTypeId BIGINT, Amount DECIMAL, Category VARCHAR(max), Note VARCHAR(max), BillSnap VARCHAR(max), PayTaleDate DATETIME DEFAULT getdate(),
-	)
+)
+drop proc sp_AddPayTale
+Create proc sp_AddPayTale
+(
+@GroupId bigint,
+  @MemberId bigint,
+  @MTypeId bigint ,
+  @Amount decimal,
+  @Category varchar(max),
+  @Note varchar(max),
+  @BillSnap varchar(max)
 
-DROP PROC sp_AddPayTale
+)
+as
+begin
+Insert into PayTales(GroupId ,
+  MemberId ,
+  MTypeId  ,
+  Amount ,
+  Category ,
+  Note ,
+  BillSnap )  values(@GroupId ,
+  @MemberId ,
+  @MTypeId  ,
+  @Amount ,
+  @Category ,
+  @Note ,
+  @BillSnap ) 
+end
 
-CREATE PROC sp_AddPayTale (@GroupId BIGINT, @MemberId BIGINT, @MTypeId BIGINT, @Amount DECIMAL, @Category VARCHAR(max), @Note VARCHAR(max), @BillSnap VARCHAR(max))
-AS
-BEGIN
-	INSERT INTO PayTales (GroupId, MemberId, MTypeId, Amount, Category, Note, BillSnap)
-	VALUES (@GroupId, @MemberId, @MTypeId, @Amount, @Category, @Note, @BillSnap)
-END
-
-SELECT b.MemberName, a.Amount, a.Category, a.Note, a.PayTaleDate
-FROM PayTales a
-INNER JOIN GMembers b ON a.MemberId = b.MemberId
-WHERE a.GroupId = @GroupId AND PayTaleDate BETWEEN DATEADD(DAY, - (DAY(GETDATE())), CAST(GETDATE() AS DATE)) AND DATEADD(mm, DATEDIFF(mm, 0, GETDATE()) + 1, 0)
+Select b.MemberName,a.Amount,a.Category,a.Note,a.PayTaleDate from PayTales a
+inner join GMembers b on a.MemberId=b.MemberId where a.GroupId=@GroupId and 
+PayTaleDate between 
+DATEADD(DAY, -(DAY(GETDATE())), CAST(GETDATE() AS DATE)) and DATEADD(mm, DATEDIFF(mm, 0, GETDATE()) + 1, 0)
 
 --SELECT DATEADD(mm, DATEDIFF(mm, 0, GETDATE()), 0) 'FirstDayOfMonth',
 -- DATEADD (dd, -1, DATEADD(mm, DATEDIFF(mm, 0, GETDATE()) + 1, 0)) 'LastDayOfMonth',
 --  DATEADD(DAY, -(DAY(GETDATE())), CAST(GETDATE() AS DATE)) 'LastDayOfPreviousMonth',
 --DATEADD(mm, DATEDIFF(mm, 0, GETDATE()) + 1, 0) 'FirstDayOfNextMonth'
---GroupWallet [Month] Member MAdvance [MAdvance,GAdvance,AuditorAdvance-ideally zero] WalletBalance = (Sum(MAdvance) - (GAMExPay > 0 ?Sum(MAdvance) :GAMHand)) [Screen4]
-DROP TABLE wallet
 
-CREATE TABLE Wallet (
-	Id BIGINT identity, GroupId BIGINT, GTranCode VARCHAR(max),
-	--STARTDATE+TOKEN
-	MemberId BIGINT, WalletAmount DECIMAL,
-	--MAdvance
-	Type VARCHAR(max), AddedDate DATETIME,
-	)
+GroupWallet[Month]
+  Member
+  MAdvance [MAdvance,GAdvance,AuditorAdvance-ideally zero]
+  WalletBalance =   (Sum(MAdvance)- ( GAMExPay>0?Sum(MAdvance):GAMHand  ))
+[Screen4]
 
-SELECT b.MemberName, a.MAdvance, a.AddedDate
-FROM Wallet a
-INNER JOIN PayTaleUser b ON a.MemberId = b.MemberId
-WHERE GroupId = GroupIdDROP PROC sp_WalletBalancePlus
+drop table wallet
+Create Table Wallet
+(
+  Id bigint identity,
+  GroupId bigint,
+  GTranCode varchar(max),--STARTDATE+TOKEN
+  MemberId bigint,
+  WalletAmount decimal, --MAdvance
+  Type varchar(max),
+  AddedDate datetime ,
+)
+Select b.MemberName,a.MAdvance,a.AddedDate from Wallet a inner join PayTaleUser b on a.MemberId=b.MemberId where GroupId=GroupId
 
-CREATE PROC sp_WalletBalancePlus (@GroupId BIGINT)
-AS
-BEGIN
-	DECLARE @GroupAdvance DECIMAL
-	DECLARE @GAMExPay DECIMAL
-	DECLARE @GAMHand DECIMAL
-	DECLARE @GABalance DECIMAL
-	DECLARE @WalletBalance DECIMAL
 
-	SET @GroupAdvance = (
-			SELECT Sum(WalletAmount)
-			FROM Wallet
-			WHERE GroupId = GroupId
-			)
-	SET @GAMHand = (
-			SELECT Sum(Amount)
-			FROM PayTales
-			WHERE GroupId = GroupId AND MTypeId = MTypeId AND PayTaleDate BETWEEN DATEADD(DAY, - (DAY(GETDATE())), CAST(GETDATE() AS DATE)) AND DATEADD(mm, DATEDIFF(mm, 0, GETDATE()) + 1, 0)
-			)
-	SET @GABalance = @GAMHand - @GroupAdvance
+drop proc sp_WalletBalancePlus
+Create proc sp_WalletBalancePlus 
+(@GroupId bigint)
+as
+begin
+Declare @GroupAdvance decimal
+Declare @GAMExPay decimal
+Declare @GAMHand decimal
+Declare @GABalance decimal
+Declare @WalletBalance decimal
 
-	IF (@GABalance > 0)
-	BEGIN
-		SET @GAMExPay = @GABalance
-	END
-	ELSE
-	BEGIN
-		SET @GAMExPay = 0
-	END
+set @GroupAdvance=(Select Sum(WalletAmount) from Wallet where  GroupId=GroupId)
+set @GAMHand=(Select Sum(Amount) from PayTales where  GroupId=GroupId and MTypeId=MTypeId and 
+PayTaleDate between 
+DATEADD(DAY, -(DAY(GETDATE())), CAST(GETDATE() AS DATE)) and DATEADD(mm, DATEDIFF(mm, 0, GETDATE()) + 1, 0))
 
-	SET @WalletBalance = @GroupAdvance - IIF(@GAMExPay > 0, @GroupAdvance, @GAMHand)
+set @GABalance=@GAMHand-@GroupAdvance
 
-	SELECT @GroupAdvance, @WalletBalance, @GAMHand, @GAMExPay
-END
+if(@GABalance>0)
+begin
+set @GAMExPay=@GABalance
+end
+else
+begin
+set @GAMExPay=0
+end
 
---* * GAMHand IS Sum(GAM ExPay List) * * GAMExPay IS Formula = > * GAMExPay(+ 0) = (
---		GAMHand - (Sum(MAdvance)) > 0 ?Equated: 0 AuditReport [Month] - MAdvance - ExPay [*GAMExPay(+-)=((GAMHand(GAdvance+OwnExPay))-Sum(MAdvance))>0?Equated:0] - DividedAmount [TotalContributedAmount/Members] - DueAmount [DividedAmount-(MAdvance+ExPay)] GROUP [TotalContributedAmount=Sum(MAdvance) +Sum(ExPay)] Member
---		GROUP [TotalSpentAmount= Sum(ExPay) +GAMExPay>0?Sum(MAdvance):GAMHand   ] [Screen5] 
-DROP PROC sp_PayTaleRpt
+set @WalletBalance = @GroupAdvance- IIF ( @GAMExPay>0, @GroupAdvance, @GAMHand )  
 
-CREATE PROC sp_PayTaleRpt (@GroupId BIGINT)
-AS
-BEGIN
-	DECLARE @GroupAdvance DECIMAL
-	DECLARE @GAMExPay DECIMAL
-	DECLARE @GAMHand DECIMAL
-	DECLARE @GABalance DECIMAL
-	DECLARE @WalletBalance DECIMAL 
-DECLARE @SampleTable TABLE (id INT, Name VARCHAR(max))
+select @GroupAdvance,@WalletBalance,@GAMHand,@GAMExPay
 
-INSERT INTO @SampleTable (id, Name)
-VALUES (@ID, @TempName)
+end
 
-SELECT *
-FROM @SampleTable
 
-		CREATE TABLE #spWalletBalancePlus (GroupAdvance DECIMAL, WalletBalance DECIMAL, GAMHand DECIMAL, GAMExPay DECIMAL)					
-		INSERT INTO #spWalletBalancePlus EXEC sp_WalletBalalncePlus @GroupId = @GroupId					
-		SELECT @GroupAdvance = @GroupAdvance, @WalletBalance = @WalletBalance, @GAMHand = @GAMHand, @GAMExPay = @GAMExPay FROM #spWalletBalancePlus					
-		DECLARE @TotalContributedAmount DECIMAL					
-		DECLARE @GroupMembers INT					
-		SET @GroupMembers = (SELECT count(*) FROM GMembers WHERE @GroupId = @GroupId) --
-		set @TotalContributedAmount=''
-		--@GroupAdvance/@GroupMembejbrs
-		--select * from wallet					
-		SELECT b.MemberName, sum(a.MAdvance) 'MAdvance' FROM Wallet a INNER JOIN GMembers b ON a.MemberId = b.MemberId
-		where a.GroupId=@GroupId
-	GROUP BY b.MemberName -- a.MemberId
-	
-	UNION ALL
-	
-	SELECT b.MemberName, sum(a.Amount) ExPay
-	FROM PayTales a
-	INNER JOIN GMembers b ON a.MemberId = b.MemberId
-	WHERE
-		--@GroupId=@GroupId and 
-		a.PayTaleDate BETWEEN DATEADD(DAY, - (DAY(GETDATE())), CAST(GETDATE() AS DATE)) AND DATEADD(mm, DATEDIFF(mm, 0, GETDATE()) + 1, 0)
-	GROUP BY b.MemberName DividedAmount [TotalContributedAmount/Members] - DueAmount [DividedAmount-(MAdvance+ExPay)]
-	GROUP [TotalContributedAmount=Sum(MAdvance) +Sum(ExPay)] Member
-	GROUP [TotalSpentAmount= Sum(ExPay) +GAMExPay>0?Sum(MAdvance):GAMHand   ]
-END 
---GroupType = Food, Trip..GroupType - ExpCategories = Restuarant, HouseholdItems, CookingItems, Others, Automobile, Donation, Gifts, Entertainment, Transportation * *= > Month wise switch
---OPTION Review AND notify members )
+**GAMHand is Sum( GAM ExPay List)
+**GAMExPay is Formula => *GAMExPay(+0)=(GAMHand-(Sum(MAdvance))>0?Equated:0
+
+AuditReport[Month] -  MAdvance -  ExPay[*GAMExPay(+-)=((GAMHand(GAdvance+OwnExPay))-Sum(MAdvance))>0?Equated:0] -
+ DividedAmount[TotalContributedAmount/Members]  - DueAmount[DividedAmount-(MAdvance+ExPay)]
+  Group[TotalContributedAmount=Sum(MAdvance) +Sum(ExPay)]
+  Member
+  Group[TotalSpentAmount= Sum(ExPay) +GAMExPay>0?Sum(MAdvance):GAMHand   ]  
+[Screen5]
+
+drop proc sp_PayTaleRpt
+Create proc sp_PayTaleRpt
+(@GroupId bigint)
+as
+begin
+Declare @GroupAdvance decimal
+Declare @GAMExPay decimal
+Declare @GAMHand decimal
+Declare @GABalance decimal
+Declare @WalletBalance decimal
+
+--Declare @SampleTable Table(id int, Name varchar(max))  
+  
+--Insert into @SampleTable(id,Name)values(@ID,@TempName)  
+  
+--select*from @SampleTable  
+  
+create table #spWalletBalancePlus
+(    
+    GroupAdvance   decimal,
+    WalletBalance decimal,
+    GAMHand decimal,
+    GAMExPay decimal
+)
+
+insert into #spWalletBalancePlus exec sp_WalletBalalncePlus @GroupId=@GroupId
+select @GroupAdvance=@GroupAdvance,@WalletBalance=@WalletBalance,@GAMHand=@GAMHand,@GAMExPay=@GAMExPay from #spWalletBalancePlus
+ 
+ Declare @TotalContributedAmount decimal
+ Declare @GroupMembers int
+ set @GroupMembers=(select count(*) from GMembers where @GroupId=@GroupId )
+ --set @TotalContributedAmount=
+ --@GroupAdvance/@GroupMembejbrs
+
+ --select * from wallet
+
+Select b.MemberName,sum(a.WalletAmount) 'MAdvance' from Wallet a inner join GMembers b
+on a.MemberId=b.MemberId 
+--where a.GroupId=@GroupId
+ group by b.MemberName-- a.MemberId
+union  
+select b.MemberName,sum(a.Amount) ExPay from PayTales a inner join GMembers b
+on a.MemberId=b.MemberId where 
+--@GroupId=@GroupId and 
+a.PayTaleDate between 
+DATEADD(DAY, -(DAY(GETDATE())), CAST(GETDATE() AS DATE)) and DATEADD(mm, DATEDIFF(mm, 0, GETDATE()) + 1, 0)
+group by b.MemberName
+
+select t1.MemberName, t1.MAdvance, coalesce(t2.ExPay, 0) ExPay
+from 
+    (Select b.MemberName,sum(a.WalletAmount) 'MAdvance' from Wallet a inner join GMembers b
+on a.MemberId=b.MemberId 
+--where a.GroupId=@GroupId
+ group by b.MemberName-- a.MemberId
+) t1
+left join
+    (select b.MemberName,sum(case when b.GMemberType='' then a.Amount
+	when b.GMemberType='' then 3 end) 
+	 ExPay from PayTales a inner join GMembers b
+on a.MemberId=b.MemberId where 
+--@GroupId=@GroupId and 
+a.PayTaleDate between 
+DATEADD(DAY, -(DAY(GETDATE())), CAST(GETDATE() AS DATE)) and DATEADD(mm, DATEDIFF(mm, 0, GETDATE()) + 1, 0)
+group by b.MemberName
+) t2
+on
+    t1.MemberName = t2.MemberName
+
+
+DividedAmount[TotalContributedAmount/Members]  - DueAmount[DividedAmount-(MAdvance+ExPay)]
+  Group[TotalContributedAmount=Sum(MAdvance) +Sum(ExPay)]
+  Member
+  Group[TotalSpentAmount= Sum(ExPay) +GAMExPay>0?Sum(MAdvance):GAMHand   ]  
+
+
+end
+GroupType = Food ,Trip ..
+GroupType-ExpCategories = Restuarant,HouseholdItems,CookingItems,Others,Automobile,Donation,Gifts,Entertainment,Transportation
+
+
+
+
+
+**=> Month wise switch option
+Review and notify members
+
+
