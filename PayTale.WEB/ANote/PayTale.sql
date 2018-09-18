@@ -12,6 +12,34 @@ Active bit,
 LeftDate datetime ,
 ReJoinedDate datetime ,
 )
+Create proc sp_UserAction
+(@MemberName varchar(max)=null,
+@UserEmail varchar(max)=null,
+@Password varchar(max)=null,
+@JoinedDate datetime =null, 
+@Active bit=0,
+@LeftDate datetime =null,
+@ReJoinedDate datetime =null,
+@Action varchar(max)=''--NEW/DEACTIVATE/REACTIVATE/DELETE
+ )
+as 
+begin
+
+if(@Action='NEW')
+begin
+
+end
+else if (@Action='DEACTIVATE')
+begin
+end
+else if (@Action='REACTIVATE')
+begin
+end
+else if (@Action='DELETE')
+begin
+end
+
+end
 
 DROP TABLE PayTaleGroup
 Create Table PayTaleGroup
