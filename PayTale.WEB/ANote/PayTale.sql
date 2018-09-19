@@ -128,7 +128,8 @@ CREATE TABLE PayTaleGroup (
 	GroupId BIGINT identity, GName VARCHAR(max), GType VARCHAR(max),
 	--Food,Trip
 	GCreator VARCHAR(max), GAuditor VARCHAR(max) --Auditor of the month/Cause
-	, Active BIT
+	, Active BIT,
+	CreatedDate datetime default getdate()
 	)
 
 CREATE PROC sp_PayTaleGroupAction (
@@ -154,7 +155,7 @@ BEGIN
 		IF NOT EXISTS (
 				SELECT TOP 1 1
 				FROM PayTaleGroup
-				WHERE GName = @GName
+				WHERE GName = @GName AND GCreator=@GCreator
 				)
 		BEGIN
 			INSERT INTO PayTaleGroup (GName, GType, GCreator, GAuditor, Active)
@@ -166,14 +167,14 @@ BEGIN
 		ELSE
 		BEGIN
 			SET @StatusCode = 5
-			SET @Description = 'USEREXISTS'
+			SET @Description = 'GROUPEXISTS'
 		END
 	END
 	ELSE IF (@Action = 'DEACTIVATE')
 	BEGIN
 		UPDATE PayTaleGroup
 		SET Active = 0, GName = GETDATE(), GAuditor
-		WHERE GName = @GName
+		WHERE GName = @GName and GCreator=@GCreator
 
 		SET @StatusCode = 2
 		SET @Description = 'DEACTIVATESUCCESS'
@@ -182,13 +183,13 @@ BEGIN
 	BEGIN
 		IF NOT EXISTS (
 				SELECT TOP 1 1
-				FROM PayTaleUser
-				WHERE UserEmail = @UserEmail
+				FROM PayTaleGroup
+				WHERE GName = @GName AND GCreator=@GCreator
 				)
 		BEGIN
-			UPDATE PayTaleUser
-			SET Active = 1, ReJoinedDate = GETDATE()
-			WHERE UserEmail = @UserEmail
+			UPDATE PayTaleGroup
+			SET Active = 1
+			WHERE GName = @GName AND GCreator=@GCreator
 
 			SET @StatusCode = 3
 			SET @Description = 'REACTIVATESUCCESS'
@@ -196,20 +197,20 @@ BEGIN
 		ELSE
 		BEGIN
 			SET @StatusCode = 6
-			SET @Description = 'USERNOTEXIST'
+			SET @Description = 'GROUPNOTEXIST'
 		END
 	END
 	ELSE IF (@Action = 'DELETE')
 	BEGIN
 		IF NOT EXISTS (
 				SELECT TOP 1 1
-				FROM PayTaleUser
-				WHERE UserEmail = @UserEmail
+				FROM PayTaleGroup
+				WHERE GName = @GName AND GCreator=@GCreator
 				)
 		BEGIN
 			DELETE
-			FROM PayTaleUser
-			WHERE UserEmail = @UserEmail
+			FROM PayTaleGroup
+			WHERE GName = @GName AND GCreator=@GCreator
 
 			SET @StatusCode = 4
 			SET @Description = 'DELETESUCCESS'
@@ -217,20 +218,20 @@ BEGIN
 		ELSE
 		BEGIN
 			SET @StatusCode = 6
-			SET @Description = 'USERNOTEXIST'
+			SET @Description = 'GROUPNOTEXIST'
 		END
 	END
 	ELSE IF (@Action = 'UPDATE')
 	BEGIN
 		IF NOT EXISTS (
 				SELECT TOP 1 1
-				FROM PayTaleUser
-				WHERE UserEmail = @UserEmail
+				FROM PayTaleGroup
+				WHERE GName = @GName AND GCreator=@GCreator
 				)
 		BEGIN
 			UPDATE PayTaleGroup
-			SET Active = 0, GName = GETDATE(), GAuditor
-			WHERE GName = @GName
+			SET Active = @Active, GName = @GName 
+			WHERE GName = @GName AND GCreator=@GCreator
 
 			SET @StatusCode = 7
 			SET @Description = 'UPDATESUCCESS'
@@ -238,7 +239,7 @@ BEGIN
 		ELSE
 		BEGIN
 			SET @StatusCode = 6
-			SET @Description = 'USERNOTEXIST'
+			SET @Description = 'GROUPNOTEXIST'
 		END
 	END
 
@@ -250,12 +251,19 @@ DROP TABLE ExpenseCategory
 CREATE TABLE ExpenseCategory (
 	Id BIGINT identity, ExpCategory VARCHAR(max) --Restuarant,HouseholdItems,CookingItems,Others,Automobile,Donation,Gifts,Entertainment,Transportation
 	)
+	
+Insert into ExpenseCategory(ExpCategory) values 
+('Restuarant'),('HouseholdItems'),('CookingItems'),('Others'),('Automobile'),('Donation'),('Gifts'),('Entertainment'),('Transportation');
+
 
 DROP TABLE MemberType
 
 CREATE TABLE MemberType (
 	MTypeId BIGINT identity, MType VARCHAR(max) -- Member/Auditor
 	)
+	
+Insert into MemberType(MType) values 
+('Member'),('Auditor');
 
 DROP TABLE GMembers
 
@@ -264,6 +272,18 @@ CREATE TABLE GMembers (
 	-- Member/AOM/AOC/Auditor
 	Active BIT
 	)
+
+Create proc sp_GMembersAction
+( @GroupId BIGINT, @MemberId BIGINT, @MemberName VARCHAR(max), @GMemberType VARCHAR(max),
+	@Active BIT,@Action VARCHAR(max)--NEW/DEACTIVATE/REACTIVATE/UPDATE/DELETE/GETALL
+	)
+as
+begin
+
+
+end
+	
+
 
 DROP TABLE PayTaleGTran
 
@@ -343,11 +363,35 @@ Create Table Wallet
   GTranCode varchar(max),--STARTDATE+TOKEN
   MemberId bigint,
   WalletAmount decimal, --MAdvance
-  Type varchar(max),
-  AddedDate datetime ,
+  AmtType varchar(max),--Advance/Settlement
+  AddedDate datetime DEFAULT GETDATE(),
+  ChangeDate datetime ,
+  PayMaster varchar(max)
 )
 Select b.MemberName,a.MAdvance,a.AddedDate from Wallet a inner join PayTaleUser b on a.MemberId=b.MemberId where GroupId=GroupId
 
+Create proc sp_WalletAction
+(@GroupId bigint,
+  @GTranCode varchar(max),--STARTDATE+TOKEN
+  @MemberId bigint,
+  @WalletAmount decimal, --MAdvance
+  @AmtType varchar(max),
+  @Action varchar(max),-- ADD/
+  @PayMaster varchar(max)
+   )
+as 
+begin --Amount can be in Positive or Negative for Add/ChangeAmout withGTrancode
+--if(@Action='ADD')
+--BEGIN
+Insert into Wallet (GroupId ,  GTranCode ,  MemberId ,  WalletAmount ,  AmtType ,  AddedDate  ,    PayMaster )
+VALUES (@GroupId ,  @GTranCode ,  @MemberId ,  @WalletAmount ,  @AmtType ,  @AddedDate  ,    @PayMaster)
+--END
+--ELSE IF (@Action='CHANGE')
+--BEGIN
+--UPDATE Wallet SET WalletAmount= WHERE Id=
+--(SELECT TOP 1 ID FROM Wallet WHERE GroupId=@GroupId , GTranCode= @GTranCode ,  MemberId=@MemberId ,  WalletAmount=@WalletAmount )
+--END
+end
 
 drop proc sp_WalletBalancePlus
 Create proc sp_WalletBalancePlus 
