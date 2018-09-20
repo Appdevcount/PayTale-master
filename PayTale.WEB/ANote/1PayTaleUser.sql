@@ -1,9 +1,22 @@
 DROP TABLE PayTaleUser
 
-CREATE TABLE PayTaleUser (MemberId BIGINT identity, MemberName VARCHAR(max), UserEmail VARCHAR(max), Password VARCHAR(max), JoinedDate DATETIME DEFAULT getdate(), Active BIT, LeftDate DATETIME, ReJoinedDate DATETIME)
+CREATE TABLE PayTaleUser (
+	MemberId BIGINT identity
+	,MemberName VARCHAR(max)
+	,UserEmail VARCHAR(max)
+	,Password VARCHAR(max)
+	,JoinedDate DATETIME DEFAULT getdate()
+	,Active BIT
+	,LeftDate DATETIME
+	,ReJoinedDate DATETIME
+	)
 
 CREATE PROC sp_UserAction (
-	@MemberName VARCHAR(max) = NULL, @UserEmail VARCHAR(max) = NULL, @Password VARCHAR(max) = NULL, @Active BIT = 0, @Action VARCHAR(max) = '' --NEW/DEACTIVATE/REACTIVATE/DELETE/UPDATEPWD/GETALL
+	@MemberName VARCHAR(max) = NULL
+	,@UserEmail VARCHAR(max) = NULL
+	,@Password VARCHAR(max) = NULL
+	,@Active BIT = 0
+	,@Action VARCHAR(max) = '' --NEW/DEACTIVATE/REACTIVATE/DELETE/UPDATEPWD/GETALL
 	)
 AS
 BEGIN
@@ -27,8 +40,20 @@ BEGIN
 				WHERE UserEmail = @UserEmail
 				)
 		BEGIN
-			INSERT INTO PayTaleUser (MemberName, UserEmail, Password, JoinedDate, Active)
-			VALUES (@MemberName, @UserEmail, @Password, GETDATE(), 1)
+			INSERT INTO PayTaleUser (
+				MemberName
+				,UserEmail
+				,Password
+				,JoinedDate
+				,Active
+				)
+			VALUES (
+				@MemberName
+				,@UserEmail
+				,@Password
+				,GETDATE()
+				,1
+				)
 
 			SET @StatusCode = 1
 			SET @Description = 'NEWSUCCESS'
@@ -42,7 +67,8 @@ BEGIN
 	ELSE IF (@Action = 'DEACTIVATE')
 	BEGIN
 		UPDATE PayTaleUser
-		SET Active = 0, LeftDate = GETDATE()
+		SET Active = 0
+			,LeftDate = GETDATE()
 		WHERE UserEmail = @UserEmail
 
 		SET @StatusCode = 2
@@ -57,7 +83,8 @@ BEGIN
 				)
 		BEGIN
 			UPDATE PayTaleUser
-			SET Active = 1, ReJoinedDate = GETDATE()
+			SET Active = 1
+				,ReJoinedDate = GETDATE()
 			WHERE UserEmail = @UserEmail
 
 			SET @StatusCode = 3
@@ -112,5 +139,6 @@ BEGIN
 		END
 	END
 
-	SELECT @StatusCode, @Description
+	SELECT @StatusCode
+		,@Description
 END

@@ -38,7 +38,7 @@ VALUES (@GroupId ,  @GTranCode ,  @MemberId ,  @WalletAmount ,  @AmtType ,  @Add
 end
 
 drop proc sp_WalletBalancePlus
-Create proc sp_WalletBalancePlus 
+CREATE proc sp_WalletBalancePlus 
 (@GroupId bigint)
 as
 begin
@@ -64,8 +64,14 @@ begin
 set @GAMExPay=0
 end
 
-set @WalletBalance = @GroupAdvance- IIF ( @GAMExPay>0, @GroupAdvance, @GAMHand )  
+--DECLARE @a int = 45, @b int = 40;  
+--SELECT IIF ( @a > @b, 'TRUE', 'FALSE' ) AS Result;  
 
-select @GroupAdvance,@WalletBalance,@GAMHand,@GAMExPay
+--set @WalletBalance = @GroupAdvance - IIF(@GAMExPay>0, @GroupAdvance, @GAMHand )
+
+set @WalletBalance = @GroupAdvance -(cASE WHEN @GAMExPay>0 THEN  @GroupAdvance ELSE @GAMHand END ) 
+--IIF(@GAMExPay>0, @GroupAdvance, @GAMHand )    
+
+select @GroupAdvance 'GroupAdvance',@WalletBalance 'WalletBalance',@GAMHand 'GAMHand',@GAMExPay 'GAMExPay'
 
 end

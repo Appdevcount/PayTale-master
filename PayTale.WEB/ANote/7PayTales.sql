@@ -1,4 +1,4 @@
-op table PayTales
+drop table PayTales
 Create Table PayTales
 (
   Id bigint identity,
@@ -19,6 +19,7 @@ Create proc sp_PayTalesAction
 (
 @PayID BIGINT =0,
 @GroupId bigint,
+@GTranCode varchar(max),
   @MemberId bigint,
   @MTypeId bigint ,
   @Amount decimal,
@@ -26,7 +27,7 @@ Create proc sp_PayTalesAction
   @Note varchar(max),
   @BillSnap varchar(max),
   @Action varchar(max),--ADD/UPDATE/DELETE/GETALL
-  @PayMaster varchar(max),
+  @PayMaster varchar(max)
 
 )
 as

@@ -1,21 +1,11 @@
 use PayTale
 
-delete from AspNetUserLogins
-delete from AspNetUsers
 
-Select * from AspNetUserLogins
-Select * from AspNetUsers
+select * from PayTaleUser order by 1 desc
+select * from PayTaleGroup order by 1 desc
+select * from GMembers order by 1 desc
+select * from GTran order by 1 desc
+select * from PayTales order by 1 desc
+select * from ExpenseCategory order by 1 desc
+select * from MemberType order by 1 desc
 
-Select * from AspNetRoles
-Select * from AspNetUserClaims
-Select * from AspNetUserRoles
-Select * from AspNetUserLogins
-Select * from AspNetUsers
-Select * from ExpenseCategory
-Select * from GMembers
-Select * from MemberType
-Select * from PayTaleGroup
-Select * from PayTaleGTran
-Select * from PayTales
-Select * from PayTaleUser
-Select * from Wallet

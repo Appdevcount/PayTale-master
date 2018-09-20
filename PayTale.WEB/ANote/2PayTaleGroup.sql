@@ -1,16 +1,23 @@
 DROP TABLE PayTaleGroup
 
 CREATE TABLE PayTaleGroup (
-	GroupId BIGINT identity, GName VARCHAR(max), GType VARCHAR(max),
+	GroupId BIGINT identity
+	,GName VARCHAR(max)
+	,GType VARCHAR(max)
+	,
 	--Food,Trip
-	GCreator VARCHAR(max), GAuditor VARCHAR(max) --Auditor of the month/Cause
-	, Active BIT,
-	CreatedDate datetime default getdate()
+	GCreator VARCHAR(max)
+	,GAuditor VARCHAR(max) --Auditor of the month/Cause
+	,Active BIT
+	,CreatedDate DATETIME DEFAULT getdate()
 	)
 
 CREATE PROC sp_PayTaleGroupAction (
-	@GName VARCHAR(max), @GType VARCHAR(max), @GCreator VARCHAR(max), @GAuditor VARCHAR(max) --Auditor of the month/Cause
-	, @Action VARCHAR(max) = '' --NEW/DEACTIVATE/REACTIVATE/DELETE/UPDATE/GETALL
+	@GName VARCHAR(max)
+	,@GType VARCHAR(max)
+	,@GCreator VARCHAR(max)
+	,@GAuditor VARCHAR(max) --Auditor of the month/Cause
+	,@Action VARCHAR(max) = '' --NEW/DEACTIVATE/REACTIVATE/DELETE/UPDATE/GETALL
 	)
 AS
 BEGIN
@@ -31,11 +38,23 @@ BEGIN
 		IF NOT EXISTS (
 				SELECT TOP 1 1
 				FROM PayTaleGroup
-				WHERE GName = @GName AND GCreator=@GCreator
+				WHERE GName = @GName AND GCreator = @GCreator
 				)
 		BEGIN
-			INSERT INTO PayTaleGroup (GName, GType, GCreator, GAuditor, Active)
-			VALUES (@GName, @GType, @GCreator, @GAuditor, 1)
+			INSERT INTO PayTaleGroup (
+				GName
+				,GType
+				,GCreator
+				,GAuditor
+				,Active
+				)
+			VALUES (
+				@GName
+				,@GType
+				,@GCreator
+				,@GAuditor
+				,1
+				)
 
 			SET @StatusCode = 1
 			SET @Description = 'NEWSUCCESS'
@@ -49,8 +68,10 @@ BEGIN
 	ELSE IF (@Action = 'DEACTIVATE')
 	BEGIN
 		UPDATE PayTaleGroup
-		SET Active = 0, GName = GETDATE(), GAuditor
-		WHERE GName = @GName and GCreator=@GCreator
+		SET Active = 0
+			,GName =@GName
+			,GAuditor=@GAuditor
+		WHERE GName = @GName AND GCreator = @GCreator
 
 		SET @StatusCode = 2
 		SET @Description = 'DEACTIVATESUCCESS'
@@ -60,12 +81,12 @@ BEGIN
 		IF NOT EXISTS (
 				SELECT TOP 1 1
 				FROM PayTaleGroup
-				WHERE GName = @GName AND GCreator=@GCreator
+				WHERE GName = @GName AND GCreator = @GCreator
 				)
 		BEGIN
 			UPDATE PayTaleGroup
 			SET Active = 1
-			WHERE GName = @GName AND GCreator=@GCreator
+			WHERE GName = @GName AND GCreator = @GCreator
 
 			SET @StatusCode = 3
 			SET @Description = 'REACTIVATESUCCESS'
@@ -81,12 +102,12 @@ BEGIN
 		IF NOT EXISTS (
 				SELECT TOP 1 1
 				FROM PayTaleGroup
-				WHERE GName = @GName AND GCreator=@GCreator
+				WHERE GName = @GName AND GCreator = @GCreator
 				)
 		BEGIN
 			DELETE
 			FROM PayTaleGroup
-			WHERE GName = @GName AND GCreator=@GCreator
+			WHERE GName = @GName AND GCreator = @GCreator
 
 			SET @StatusCode = 4
 			SET @Description = 'DELETESUCCESS'
@@ -102,12 +123,13 @@ BEGIN
 		IF NOT EXISTS (
 				SELECT TOP 1 1
 				FROM PayTaleGroup
-				WHERE GName = @GName AND GCreator=@GCreator
+				WHERE GName = @GName AND GCreator = @GCreator
 				)
 		BEGIN
 			UPDATE PayTaleGroup
-			SET Active = @Active, GName = @GName 
-			WHERE GName = @GName AND GCreator=@GCreator
+			SET 
+				GName = @GName
+			WHERE GName = @GName AND GCreator = @GCreator
 
 			SET @StatusCode = 7
 			SET @Description = 'UPDATESUCCESS'
@@ -119,5 +141,6 @@ BEGIN
 		END
 	END
 
-	SELECT @StatusCode, @Description
+	SELECT @StatusCode
+		,@Description
 END

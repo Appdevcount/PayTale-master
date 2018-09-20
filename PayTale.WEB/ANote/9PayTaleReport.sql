@@ -92,6 +92,8 @@ group by b.MemberName
 on
     t1.MemberName = t2.MemberName
 
+end
+
 
 AuditReport[Month] - MAdvance -  ExPay[*GAMExPay(+-)=((GAMHand(GAdvance+OwnExPay))-Sum(MAdvance))>0?Equated:0] - DividedAmount[TotalContributedAmount/Members]  - DueAmount[DividedAmount-(MAdvance+ExPay)]
   Group[TotalContributedAmount=Sum(MAdvance) +Sum(ExPay)]

@@ -1,17 +1,23 @@
 DROP TABLE GMembers
 
 CREATE TABLE GMembers (
-	Id BIGINT identity, 
-	GroupId BIGINT,
-	 MemberId BIGINT, 
-	 MemberName VARCHAR(max), 
-	 GMemberType VARCHAR(max),
+	Id BIGINT identity
+	,GroupId BIGINT
+	,MemberId BIGINT
+	,MemberName VARCHAR(max)
+	,GMemberType VARCHAR(max)
+	,
 	-- Member/AOM/AOC/Auditor
 	Active BIT
 	)
 
 CREATE PROC sp_GMembersAction (
-	@GroupId BIGINT, @MemberId BIGINT, @MemberName VARCHAR(max), @GMemberType VARCHAR(max), @Active BIT, @Action VARCHAR(max) --NEW/DEACTIVATE/REACTIVATE/UPDATE/DELETE/GETALL
+	@GroupId BIGINT
+	,@MemberId BIGINT
+	,@MemberName VARCHAR(max)
+	,@GMemberType VARCHAR(max)
+	,@Active BIT
+	,@Action VARCHAR(max) --NEW/DEACTIVATE/REACTIVATE/UPDATE/DELETE/GETALL
 	)
 AS
 BEGIN
@@ -35,8 +41,20 @@ BEGIN
 				WHERE GroupId = @GroupId AND MemberId = @MemberId
 				)
 		BEGIN
-			INSERT INTO GMembers ( GroupId , MemberId , MemberName , GMemberType , Active  )
-			VALUES (@GroupId , @MemberId , @MemberName , @GMemberType , 1 )
+			INSERT INTO GMembers (
+				GroupId
+				,MemberId
+				,MemberName
+				,GMemberType
+				,Active
+				)
+			VALUES (
+				@GroupId
+				,@MemberId
+				,@MemberName
+				,@GMemberType
+				,1
+				)
 
 			SET @StatusCode = 1
 			SET @Description = 'NEWSUCCESS'
@@ -51,7 +69,7 @@ BEGIN
 	BEGIN
 		UPDATE GMembers
 		SET Active = 0
-		WHERE GName = @GName AND GCreator = @GCreator
+				WHERE GroupId = @GroupId AND MemberId = @MemberId
 
 		SET @StatusCode = 2
 		SET @Description = 'DEACTIVATESUCCESS'
@@ -107,7 +125,7 @@ BEGIN
 				)
 		BEGIN
 			UPDATE GMembers
-			SET Active = @Active, GName = @GName
+			SET Active = @Active
 			WHERE GroupId = @GroupId AND MemberId = @MemberId
 
 			SET @StatusCode = 7
@@ -120,5 +138,6 @@ BEGIN
 		END
 	END
 
-	SELECT @StatusCode, @Description
+	SELECT @StatusCode
+		,@Description
 END
