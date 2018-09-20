@@ -155,6 +155,16 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ANote\1PayTaleUser.sql" />
+    <Content Include="ANote\2PayTaleGroup.sql" />
+    <Content Include="ANote\3ExpenseCategory.sql" />
+    <Content Include="ANote\4MemberType.sql" />
+    <Content Include="ANote\5GMember.sql" />
+    <Content Include="ANote\6PayTaleGTran.sql" />
+    <Content Include="ANote\7PayTales.sql" />
+    <Content Include="ANote\8Wallet.sql" />
+    <Content Include="ANote\9PayTaleReport.sql" />
+    <Content Include="ANote\GetSQL.sql" />
     <Content Include="ANote\PayTale.sql" />
     <Content Include="ANote\PayTaleInit.WEB.txt" />
     <Content Include="ANote\PayTale.WEB.txt" />
@@ -172,6 +182,7 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="ANote\expense-types-definitions-v5.pdf" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
