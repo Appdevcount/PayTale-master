@@ -54,6 +54,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -237,7 +238,61 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AuthController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\ValuesController.cs" />
+    <Compile Include="Controllers\TaleConfigController.cs" />
+    <Compile Include="Controllers\UserGroupController.cs" />
+    <Compile Include="Controllers\WalletController.cs" />
+    <Compile Include="Controllers\PayTalesController.cs" />
+    <Compile Include="DAL.Core\ExpenseCategory.cs">
+      <DependentUpon>PayTale.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DAL.Core\GMember.cs">
+      <DependentUpon>PayTale.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DAL.Core\GTran.cs">
+      <DependentUpon>PayTale.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DAL.Core\MemberType.cs">
+      <DependentUpon>PayTale.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DAL.Core\PayTale.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PayTale.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DAL.Core\PayTale.cs">
+      <DependentUpon>PayTale.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DAL.Core\PayTale.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PayTale.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="DAL.Core\PayTale1.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PayTale.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DAL.Core\PayTaleGroup.cs">
+      <DependentUpon>PayTale.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DAL.Core\PayTaleUser.cs">
+      <DependentUpon>PayTale.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DAL.Core\sp_GMembersAction_Result.cs">
+      <DependentUpon>PayTale.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DAL.Core\sp_PayTaleGroupAction_Result.cs">
+      <DependentUpon>PayTale.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DAL.Core\sp_PayTalesAction_Result.cs">
+      <DependentUpon>PayTale.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DAL.Core\sp_UserAction_Result.cs">
+      <DependentUpon>PayTale.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DAL.Core\Wallet.cs">
+      <DependentUpon>PayTale.tt</DependentUpon>
+    </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -255,6 +310,16 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="DAL.Core\PayTale.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>PayTale.edmx</DependentUpon>
+      <LastGenOutput>PayTale.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="DAL.Core\PayTale.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>PayTale.edmx</DependentUpon>
+      <LastGenOutput>PayTale1.cs</LastGenOutput>
+    </Content>
     <Content Include="ExternalAuth.html" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -282,6 +347,13 @@
     <Content Include="Areas\HelpPage\Views\Help\Api.cshtml" />
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <EntityDeploy Include="DAL.Core\PayTale.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>PayTale.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="DAL.Core\PayTale.edmx.diagram">
+      <DependentUpon>PayTale.edmx</DependentUpon>
     </Content>
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\GoogleAuthenticator.js" />
@@ -316,7 +388,6 @@
     <Folder Include="App_Data\" />
     <Folder Include="BusinessLogic\" />
     <Folder Include="Common\" />
-    <Folder Include="DAL.Core\" />
     <Folder Include="DAL.Infrastructure\" />
     <Folder Include="Services\" />
   </ItemGroup>
@@ -348,6 +419,9 @@
     <None Include="packages.config" />
     <Content Include="Scripts\jquery-3.3.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.3.1.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -1,0 +1,641 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="PayTaleModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'PayTale.dbo.ExpenseCategory' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="ExpenseCategory">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ExpCategory" Type="varchar(max)" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'PayTale.dbo.GMembers' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="GMembers">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="GroupId" Type="bigint" />
+          <Property Name="MemberId" Type="bigint" />
+          <Property Name="MemberName" Type="varchar(max)" />
+          <Property Name="GMemberType" Type="varchar(max)" />
+          <Property Name="Active" Type="bit" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'PayTale.dbo.GTran' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="GTran">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="GroupId" Type="bigint" />
+          <Property Name="GTranCode" Type="varchar(max)" />
+          <Property Name="STATUS" Type="varchar(max)" />
+          <Property Name="StartDate" Type="datetime" />
+          <Property Name="EndDate" Type="datetime" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'PayTale.dbo.MemberType' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="MemberType">
+          <Key>
+            <PropertyRef Name="MTypeId" />
+          </Key>
+          <Property Name="MTypeId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MType" Type="varchar(max)" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'PayTale.dbo.PayTaleGroup' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="PayTaleGroup">
+          <Key>
+            <PropertyRef Name="GroupId" />
+          </Key>
+          <Property Name="GroupId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="GName" Type="varchar(max)" />
+          <Property Name="GType" Type="varchar(max)" />
+          <Property Name="GCreator" Type="varchar(max)" />
+          <Property Name="GAuditor" Type="varchar(max)" />
+          <Property Name="Active" Type="bit" />
+          <Property Name="CreatedDate" Type="datetime" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'PayTale.dbo.PayTales' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="PayTales">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="GroupId" Type="bigint" />
+          <Property Name="GTranCode" Type="varchar(max)" />
+          <Property Name="MemberId" Type="bigint" />
+          <Property Name="MTypeId" Type="bigint" />
+          <Property Name="Amount" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="Category" Type="varchar(max)" />
+          <Property Name="Note" Type="varchar(max)" />
+          <Property Name="BillSnap" Type="varchar(max)" />
+          <Property Name="PayTaleDate" Type="datetime" />
+          <Property Name="PayMaster" Type="varchar(max)" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'PayTale.dbo.PayTaleUser' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="PayTaleUser">
+          <Key>
+            <PropertyRef Name="MemberId" />
+          </Key>
+          <Property Name="MemberId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MemberName" Type="varchar(max)" />
+          <Property Name="UserEmail" Type="varchar(max)" />
+          <Property Name="Password" Type="varchar(max)" />
+          <Property Name="JoinedDate" Type="datetime" />
+          <Property Name="Active" Type="bit" />
+          <Property Name="LeftDate" Type="datetime" />
+          <Property Name="ReJoinedDate" Type="datetime" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'PayTale.dbo.Wallet' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Wallet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="GroupId" Type="bigint" />
+          <Property Name="GTranCode" Type="varchar(max)" />
+          <Property Name="MemberId" Type="bigint" />
+          <Property Name="WalletAmount" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="AmtType" Type="varchar(max)" />
+          <Property Name="AddedDate" Type="datetime" />
+          <Property Name="ChangeDate" Type="datetime" />
+          <Property Name="PayMaster" Type="varchar(max)" />
+        </EntityType>
+        <Function Name="sp_GMembersAction" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="GroupId" Type="bigint" Mode="In" />
+          <Parameter Name="MemberId" Type="bigint" Mode="In" />
+          <Parameter Name="MemberName" Type="varchar(max)" Mode="In" />
+          <Parameter Name="GMemberType" Type="varchar(max)" Mode="In" />
+          <Parameter Name="Active" Type="bit" Mode="In" />
+          <Parameter Name="Action" Type="varchar(max)" Mode="In" />
+        </Function>
+        <Function Name="sp_GTranAction" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="GroupId" Type="bigint" Mode="In" />
+          <Parameter Name="STATUS" Type="varchar(max)" Mode="In" />
+        </Function>
+        <Function Name="sp_PayTaleGroupAction" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="GName" Type="varchar(max)" Mode="In" />
+          <Parameter Name="GType" Type="varchar(max)" Mode="In" />
+          <Parameter Name="GCreator" Type="varchar(max)" Mode="In" />
+          <Parameter Name="GAuditor" Type="varchar(max)" Mode="In" />
+          <Parameter Name="Action" Type="varchar(max)" Mode="In" />
+        </Function>
+        <Function Name="sp_PayTaleRpt" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="GroupId" Type="bigint" Mode="In" />
+        </Function>
+        <Function Name="sp_PayTalesAction" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="PayID" Type="bigint" Mode="In" />
+          <Parameter Name="GroupId" Type="bigint" Mode="In" />
+          <Parameter Name="GTranCode" Type="varchar(max)" Mode="In" />
+          <Parameter Name="MemberId" Type="bigint" Mode="In" />
+          <Parameter Name="MTypeId" Type="bigint" Mode="In" />
+          <Parameter Name="Amount" Type="decimal" Mode="In" />
+          <Parameter Name="Category" Type="varchar(max)" Mode="In" />
+          <Parameter Name="Note" Type="varchar(max)" Mode="In" />
+          <Parameter Name="BillSnap" Type="varchar(max)" Mode="In" />
+          <Parameter Name="Action" Type="varchar(max)" Mode="In" />
+          <Parameter Name="PayMaster" Type="varchar(max)" Mode="In" />
+        </Function>
+        <Function Name="sp_UserAction" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="MemberName" Type="varchar(max)" Mode="In" />
+          <Parameter Name="UserEmail" Type="varchar(max)" Mode="In" />
+          <Parameter Name="Password" Type="varchar(max)" Mode="In" />
+          <Parameter Name="Active" Type="bit" Mode="In" />
+          <Parameter Name="Action" Type="varchar(max)" Mode="In" />
+        </Function>
+        <Function Name="sp_WalletAction" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="GroupId" Type="bigint" Mode="In" />
+          <Parameter Name="GTranCode" Type="varchar(max)" Mode="In" />
+          <Parameter Name="MemberId" Type="bigint" Mode="In" />
+          <Parameter Name="WalletAmount" Type="decimal" Mode="In" />
+          <Parameter Name="AmtType" Type="varchar(max)" Mode="In" />
+          <Parameter Name="Action" Type="varchar(max)" Mode="In" />
+          <Parameter Name="PayMaster" Type="varchar(max)" Mode="In" />
+        </Function>
+        <Function Name="sp_WalletBalancePlus" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="GroupId" Type="bigint" Mode="In" />
+        </Function>
+        <EntityContainer Name="PayTaleModelStoreContainer">
+          <EntitySet Name="ExpenseCategory" EntityType="Self.ExpenseCategory" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [ExpenseCategory].[Id] AS [Id], 
+    [ExpenseCategory].[ExpCategory] AS [ExpCategory]
+    FROM [dbo].[ExpenseCategory] AS [ExpenseCategory]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="GMembers" EntityType="Self.GMembers" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [GMembers].[Id] AS [Id], 
+    [GMembers].[GroupId] AS [GroupId], 
+    [GMembers].[MemberId] AS [MemberId], 
+    [GMembers].[MemberName] AS [MemberName], 
+    [GMembers].[GMemberType] AS [GMemberType], 
+    [GMembers].[Active] AS [Active]
+    FROM [dbo].[GMembers] AS [GMembers]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="GTran" EntityType="Self.GTran" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [GTran].[Id] AS [Id], 
+    [GTran].[GroupId] AS [GroupId], 
+    [GTran].[GTranCode] AS [GTranCode], 
+    [GTran].[STATUS] AS [STATUS], 
+    [GTran].[StartDate] AS [StartDate], 
+    [GTran].[EndDate] AS [EndDate]
+    FROM [dbo].[GTran] AS [GTran]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="MemberType" EntityType="Self.MemberType" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [MemberType].[MTypeId] AS [MTypeId], 
+    [MemberType].[MType] AS [MType]
+    FROM [dbo].[MemberType] AS [MemberType]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="PayTaleGroup" EntityType="Self.PayTaleGroup" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [PayTaleGroup].[GroupId] AS [GroupId], 
+    [PayTaleGroup].[GName] AS [GName], 
+    [PayTaleGroup].[GType] AS [GType], 
+    [PayTaleGroup].[GCreator] AS [GCreator], 
+    [PayTaleGroup].[GAuditor] AS [GAuditor], 
+    [PayTaleGroup].[Active] AS [Active], 
+    [PayTaleGroup].[CreatedDate] AS [CreatedDate]
+    FROM [dbo].[PayTaleGroup] AS [PayTaleGroup]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="PayTales" EntityType="Self.PayTales" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [PayTales].[Id] AS [Id], 
+    [PayTales].[GroupId] AS [GroupId], 
+    [PayTales].[GTranCode] AS [GTranCode], 
+    [PayTales].[MemberId] AS [MemberId], 
+    [PayTales].[MTypeId] AS [MTypeId], 
+    [PayTales].[Amount] AS [Amount], 
+    [PayTales].[Category] AS [Category], 
+    [PayTales].[Note] AS [Note], 
+    [PayTales].[BillSnap] AS [BillSnap], 
+    [PayTales].[PayTaleDate] AS [PayTaleDate], 
+    [PayTales].[PayMaster] AS [PayMaster]
+    FROM [dbo].[PayTales] AS [PayTales]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="PayTaleUser" EntityType="Self.PayTaleUser" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [PayTaleUser].[MemberId] AS [MemberId], 
+    [PayTaleUser].[MemberName] AS [MemberName], 
+    [PayTaleUser].[UserEmail] AS [UserEmail], 
+    [PayTaleUser].[Password] AS [Password], 
+    [PayTaleUser].[JoinedDate] AS [JoinedDate], 
+    [PayTaleUser].[Active] AS [Active], 
+    [PayTaleUser].[LeftDate] AS [LeftDate], 
+    [PayTaleUser].[ReJoinedDate] AS [ReJoinedDate]
+    FROM [dbo].[PayTaleUser] AS [PayTaleUser]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Wallet" EntityType="Self.Wallet" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Wallet].[Id] AS [Id], 
+    [Wallet].[GroupId] AS [GroupId], 
+    [Wallet].[GTranCode] AS [GTranCode], 
+    [Wallet].[MemberId] AS [MemberId], 
+    [Wallet].[WalletAmount] AS [WalletAmount], 
+    [Wallet].[AmtType] AS [AmtType], 
+    [Wallet].[AddedDate] AS [AddedDate], 
+    [Wallet].[ChangeDate] AS [ChangeDate], 
+    [Wallet].[PayMaster] AS [PayMaster]
+    FROM [dbo].[Wallet] AS [Wallet]</DefiningQuery>
+          </EntitySet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="PayTaleModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="ExpenseCategory">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ExpCategory" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="GMember">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="GroupId" Type="Int64" />
+          <Property Name="MemberId" Type="Int64" />
+          <Property Name="MemberName" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="GMemberType" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Active" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="GTran">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="GroupId" Type="Int64" />
+          <Property Name="GTranCode" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="STATUS" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="StartDate" Type="DateTime" Precision="3" />
+          <Property Name="EndDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="MemberType">
+          <Key>
+            <PropertyRef Name="MTypeId" />
+          </Key>
+          <Property Name="MTypeId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MType" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="PayTaleGroup">
+          <Key>
+            <PropertyRef Name="GroupId" />
+          </Key>
+          <Property Name="GroupId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="GName" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="GType" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="GCreator" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="GAuditor" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Active" Type="Boolean" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="PayTale">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="GroupId" Type="Int64" />
+          <Property Name="GTranCode" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="MemberId" Type="Int64" />
+          <Property Name="MTypeId" Type="Int64" />
+          <Property Name="Amount" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="Category" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Note" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="BillSnap" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="PayTaleDate" Type="DateTime" Precision="3" />
+          <Property Name="PayMaster" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="PayTaleUser">
+          <Key>
+            <PropertyRef Name="MemberId" />
+          </Key>
+          <Property Name="MemberId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MemberName" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="UserEmail" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Password" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="JoinedDate" Type="DateTime" Precision="3" />
+          <Property Name="Active" Type="Boolean" />
+          <Property Name="LeftDate" Type="DateTime" Precision="3" />
+          <Property Name="ReJoinedDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityContainer Name="PayTaleEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="ExpenseCategories" EntityType="Self.ExpenseCategory" />
+          <EntitySet Name="GMembers" EntityType="Self.GMember" />
+          <EntitySet Name="GTrans" EntityType="Self.GTran" />
+          <EntitySet Name="MemberTypes" EntityType="Self.MemberType" />
+          <EntitySet Name="PayTaleGroups" EntityType="Self.PayTaleGroup" />
+          <EntitySet Name="PayTales" EntityType="Self.PayTale" />
+          <EntitySet Name="PayTaleUsers" EntityType="Self.PayTaleUser" />
+          <FunctionImport Name="sp_GMembersAction" ReturnType="Collection(PayTaleModel.sp_GMembersAction_Result)">
+            <Parameter Name="GroupId" Mode="In" Type="Int64" />
+            <Parameter Name="MemberId" Mode="In" Type="Int64" />
+            <Parameter Name="MemberName" Mode="In" Type="String" />
+            <Parameter Name="GMemberType" Mode="In" Type="String" />
+            <Parameter Name="Active" Mode="In" Type="Boolean" />
+            <Parameter Name="Action" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="sp_GTranAction">
+            <Parameter Name="GroupId" Mode="In" Type="Int64" />
+            <Parameter Name="STATUS" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="sp_PayTaleGroupAction" ReturnType="Collection(PayTaleModel.sp_PayTaleGroupAction_Result)">
+            <Parameter Name="GName" Mode="In" Type="String" />
+            <Parameter Name="GType" Mode="In" Type="String" />
+            <Parameter Name="GCreator" Mode="In" Type="String" />
+            <Parameter Name="GAuditor" Mode="In" Type="String" />
+            <Parameter Name="Action" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="sp_PayTaleRpt">
+          <Parameter Name="GroupId" Mode="In" Type="Int64" />
+          </FunctionImport>
+          <FunctionImport Name="sp_PayTalesAction" ReturnType="Collection(PayTaleModel.sp_PayTalesAction_Result)">
+            <Parameter Name="PayID" Mode="In" Type="Int64" />
+            <Parameter Name="GroupId" Mode="In" Type="Int64" />
+            <Parameter Name="GTranCode" Mode="In" Type="String" />
+            <Parameter Name="MemberId" Mode="In" Type="Int64" />
+            <Parameter Name="MTypeId" Mode="In" Type="Int64" />
+            <Parameter Name="Amount" Mode="In" Type="Decimal" />
+            <Parameter Name="Category" Mode="In" Type="String" />
+            <Parameter Name="Note" Mode="In" Type="String" />
+            <Parameter Name="BillSnap" Mode="In" Type="String" />
+            <Parameter Name="Action" Mode="In" Type="String" />
+            <Parameter Name="PayMaster" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="sp_UserAction" ReturnType="Collection(PayTaleModel.sp_UserAction_Result)">
+            <Parameter Name="MemberName" Mode="In" Type="String" />
+            <Parameter Name="UserEmail" Mode="In" Type="String" />
+            <Parameter Name="Password" Mode="In" Type="String" />
+            <Parameter Name="Active" Mode="In" Type="Boolean" />
+            <Parameter Name="Action" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="sp_WalletBalancePlus">
+          <Parameter Name="GroupId" Mode="In" Type="Int64" />
+          </FunctionImport>
+          <EntitySet Name="Wallets" EntityType="PayTaleModel.Wallet" />
+          <FunctionImport Name="sp_WalletAction">
+            <Parameter Name="GroupId" Mode="In" Type="Int64" />
+            <Parameter Name="GTranCode" Mode="In" Type="String" />
+            <Parameter Name="MemberId" Mode="In" Type="Int64" />
+            <Parameter Name="WalletAmount" Mode="In" Type="Decimal" />
+            <Parameter Name="AmtType" Mode="In" Type="String" />
+            <Parameter Name="Action" Mode="In" Type="String" />
+            <Parameter Name="PayMaster" Mode="In" Type="String" />
+          </FunctionImport>
+        </EntityContainer>
+        <ComplexType Name="sp_GMembersAction_Result">
+          <Property Type="Int64" Name="Id" Nullable="false" />
+          <Property Type="Int64" Name="GroupId" Nullable="true" />
+          <Property Type="Int64" Name="MemberId" Nullable="true" />
+          <Property Type="String" Name="MemberName" Nullable="true" />
+          <Property Type="String" Name="GMemberType" Nullable="true" />
+          <Property Type="Boolean" Name="Active" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="sp_PayTaleGroupAction_Result">
+          <Property Type="Int64" Name="GroupId" Nullable="false" />
+          <Property Type="String" Name="GName" Nullable="true" />
+          <Property Type="String" Name="GType" Nullable="true" />
+          <Property Type="String" Name="GCreator" Nullable="true" />
+          <Property Type="String" Name="GAuditor" Nullable="true" />
+          <Property Type="Boolean" Name="Active" Nullable="true" />
+          <Property Type="DateTime" Name="CreatedDate" Nullable="true" Precision="23" />
+        </ComplexType>
+        <ComplexType Name="sp_PayTalesAction_Result">
+          <Property Type="Int64" Name="Id" Nullable="false" />
+          <Property Type="Int64" Name="GroupId" Nullable="true" />
+          <Property Type="String" Name="GTranCode" Nullable="true" />
+          <Property Type="Int64" Name="MemberId" Nullable="true" />
+          <Property Type="Int64" Name="MTypeId" Nullable="true" />
+          <Property Type="Decimal" Name="Amount" Nullable="true" Precision="18" Scale="0" />
+          <Property Type="String" Name="Category" Nullable="true" />
+          <Property Type="String" Name="Note" Nullable="true" />
+          <Property Type="String" Name="BillSnap" Nullable="true" />
+          <Property Type="DateTime" Name="PayTaleDate" Nullable="true" Precision="23" />
+          <Property Type="String" Name="PayMaster" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="sp_UserAction_Result">
+          <Property Type="Int64" Name="MemberId" Nullable="false" />
+          <Property Type="String" Name="MemberName" Nullable="true" />
+          <Property Type="String" Name="UserEmail" Nullable="true" />
+          <Property Type="String" Name="Password" Nullable="true" />
+          <Property Type="DateTime" Name="JoinedDate" Nullable="true" Precision="23" />
+          <Property Type="Boolean" Name="Active" Nullable="true" />
+          <Property Type="DateTime" Name="LeftDate" Nullable="true" Precision="23" />
+          <Property Type="DateTime" Name="ReJoinedDate" Nullable="true" Precision="23" />
+        </ComplexType>
+        <EntityType Name="Wallet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="GroupId" Type="Int64" />
+          <Property Name="GTranCode" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="MemberId" Type="Int64" />
+          <Property Name="WalletAmount" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="AmtType" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="AddedDate" Type="DateTime" Precision="3" />
+          <Property Name="ChangeDate" Type="DateTime" Precision="3" />
+          <Property Name="PayMaster" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="PayTaleModelStoreContainer" CdmEntityContainer="PayTaleEntities">
+          <EntitySetMapping Name="ExpenseCategories">
+            <EntityTypeMapping TypeName="PayTaleModel.ExpenseCategory">
+              <MappingFragment StoreEntitySet="ExpenseCategory">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ExpCategory" ColumnName="ExpCategory" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GMembers">
+            <EntityTypeMapping TypeName="PayTaleModel.GMember">
+              <MappingFragment StoreEntitySet="GMembers">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="GroupId" ColumnName="GroupId" />
+                <ScalarProperty Name="MemberId" ColumnName="MemberId" />
+                <ScalarProperty Name="MemberName" ColumnName="MemberName" />
+                <ScalarProperty Name="GMemberType" ColumnName="GMemberType" />
+                <ScalarProperty Name="Active" ColumnName="Active" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GTrans">
+            <EntityTypeMapping TypeName="PayTaleModel.GTran">
+              <MappingFragment StoreEntitySet="GTran">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="GroupId" ColumnName="GroupId" />
+                <ScalarProperty Name="GTranCode" ColumnName="GTranCode" />
+                <ScalarProperty Name="STATUS" ColumnName="STATUS" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MemberTypes">
+            <EntityTypeMapping TypeName="PayTaleModel.MemberType">
+              <MappingFragment StoreEntitySet="MemberType">
+                <ScalarProperty Name="MTypeId" ColumnName="MTypeId" />
+                <ScalarProperty Name="MType" ColumnName="MType" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PayTaleGroups">
+            <EntityTypeMapping TypeName="PayTaleModel.PayTaleGroup">
+              <MappingFragment StoreEntitySet="PayTaleGroup">
+                <ScalarProperty Name="GroupId" ColumnName="GroupId" />
+                <ScalarProperty Name="GName" ColumnName="GName" />
+                <ScalarProperty Name="GType" ColumnName="GType" />
+                <ScalarProperty Name="GCreator" ColumnName="GCreator" />
+                <ScalarProperty Name="GAuditor" ColumnName="GAuditor" />
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PayTales">
+            <EntityTypeMapping TypeName="PayTaleModel.PayTale">
+              <MappingFragment StoreEntitySet="PayTales">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="GroupId" ColumnName="GroupId" />
+                <ScalarProperty Name="GTranCode" ColumnName="GTranCode" />
+                <ScalarProperty Name="MemberId" ColumnName="MemberId" />
+                <ScalarProperty Name="MTypeId" ColumnName="MTypeId" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="Category" ColumnName="Category" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="BillSnap" ColumnName="BillSnap" />
+                <ScalarProperty Name="PayTaleDate" ColumnName="PayTaleDate" />
+                <ScalarProperty Name="PayMaster" ColumnName="PayMaster" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PayTaleUsers">
+            <EntityTypeMapping TypeName="PayTaleModel.PayTaleUser">
+              <MappingFragment StoreEntitySet="PayTaleUser">
+                <ScalarProperty Name="MemberId" ColumnName="MemberId" />
+                <ScalarProperty Name="MemberName" ColumnName="MemberName" />
+                <ScalarProperty Name="UserEmail" ColumnName="UserEmail" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="JoinedDate" ColumnName="JoinedDate" />
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="LeftDate" ColumnName="LeftDate" />
+                <ScalarProperty Name="ReJoinedDate" ColumnName="ReJoinedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="sp_GMembersAction" FunctionName="PayTaleModel.Store.sp_GMembersAction">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="PayTaleModel.sp_GMembersAction_Result">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="GroupId" ColumnName="GroupId" />
+                <ScalarProperty Name="MemberId" ColumnName="MemberId" />
+                <ScalarProperty Name="MemberName" ColumnName="MemberName" />
+                <ScalarProperty Name="GMemberType" ColumnName="GMemberType" />
+                <ScalarProperty Name="Active" ColumnName="Active" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_GTranAction" FunctionName="PayTaleModel.Store.sp_GTranAction" />
+          <FunctionImportMapping FunctionImportName="sp_PayTaleGroupAction" FunctionName="PayTaleModel.Store.sp_PayTaleGroupAction">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="PayTaleModel.sp_PayTaleGroupAction_Result">
+                <ScalarProperty Name="GroupId" ColumnName="GroupId" />
+                <ScalarProperty Name="GName" ColumnName="GName" />
+                <ScalarProperty Name="GType" ColumnName="GType" />
+                <ScalarProperty Name="GCreator" ColumnName="GCreator" />
+                <ScalarProperty Name="GAuditor" ColumnName="GAuditor" />
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_PayTaleRpt" FunctionName="PayTaleModel.Store.sp_PayTaleRpt" />
+          <FunctionImportMapping FunctionImportName="sp_PayTalesAction" FunctionName="PayTaleModel.Store.sp_PayTalesAction">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="PayTaleModel.sp_PayTalesAction_Result">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="GroupId" ColumnName="GroupId" />
+                <ScalarProperty Name="GTranCode" ColumnName="GTranCode" />
+                <ScalarProperty Name="MemberId" ColumnName="MemberId" />
+                <ScalarProperty Name="MTypeId" ColumnName="MTypeId" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="Category" ColumnName="Category" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="BillSnap" ColumnName="BillSnap" />
+                <ScalarProperty Name="PayTaleDate" ColumnName="PayTaleDate" />
+                <ScalarProperty Name="PayMaster" ColumnName="PayMaster" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_UserAction" FunctionName="PayTaleModel.Store.sp_UserAction">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="PayTaleModel.sp_UserAction_Result">
+                <ScalarProperty Name="MemberId" ColumnName="MemberId" />
+                <ScalarProperty Name="MemberName" ColumnName="MemberName" />
+                <ScalarProperty Name="UserEmail" ColumnName="UserEmail" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="JoinedDate" ColumnName="JoinedDate" />
+                <ScalarProperty Name="Active" ColumnName="Active" />
+                <ScalarProperty Name="LeftDate" ColumnName="LeftDate" />
+                <ScalarProperty Name="ReJoinedDate" ColumnName="ReJoinedDate" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_WalletBalancePlus" FunctionName="PayTaleModel.Store.sp_WalletBalancePlus" />
+          <EntitySetMapping Name="Wallets">
+            <EntityTypeMapping TypeName="PayTaleModel.Wallet">
+              <MappingFragment StoreEntitySet="Wallet">
+                <ScalarProperty Name="PayMaster" ColumnName="PayMaster" />
+                <ScalarProperty Name="ChangeDate" ColumnName="ChangeDate" />
+                <ScalarProperty Name="AddedDate" ColumnName="AddedDate" />
+                <ScalarProperty Name="AmtType" ColumnName="AmtType" />
+                <ScalarProperty Name="WalletAmount" ColumnName="WalletAmount" />
+                <ScalarProperty Name="MemberId" ColumnName="MemberId" />
+                <ScalarProperty Name="GTranCode" ColumnName="GTranCode" />
+                <ScalarProperty Name="GroupId" ColumnName="GroupId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="sp_WalletAction" FunctionName="PayTaleModel.Store.sp_WalletAction" />
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
